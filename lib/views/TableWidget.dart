@@ -24,7 +24,7 @@ class _TableWidgetState extends State<TableWidget> {
         rows: widget.itemList
             .map((elem) => DataRow(cells: [
                   DataCell(Text(elem.item)),
-                  DataCell(Text(elem.cost)),
+                  DataCell(Text(elem.cost.toString())),
                   DataCell(Text(elem.date)),
                 ]))
             .toList());

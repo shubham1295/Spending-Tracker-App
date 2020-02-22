@@ -1,23 +1,24 @@
 class Items {
-  String _id;
-  String _item;
-  String _cost;
+  String sId;
+  String item;
+  int cost;
+  String date;
 
-  String get cost => _cost;
+  Items({this.sId, this.item, this.cost, this.date});
 
-  set cost(String value) => _cost = value;
-  
-  String _date;
+  Items.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    item = json['item'];
+    cost = json['cost'];
+    date = json['date'];
+  }
 
-  String get id => _id;
-
-  set id(String value) => _id = value;
-
-  String get item => _item;
-
-  set item(String value) => _item = value;
-
-  String get date => _date;
-
-  set date(String value) => _date = value;
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['item'] = this.item;
+    data['cost'] = this.cost;
+    data['date'] = this.date;
+    return data;
+  }
 }

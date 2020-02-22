@@ -33,7 +33,7 @@ class MenuDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.calendar_today),
-            title: Text('Date'),
+            title: Text('Search by Date'),
           ),
           ListTile(
             leading: Icon(Icons.settings),
