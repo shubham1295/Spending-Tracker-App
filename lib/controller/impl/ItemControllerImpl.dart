@@ -39,6 +39,7 @@ class ItemControllerImpl implements ItemController {
       }
     } catch (e) {
       throw Exception("No Internet");
+      // add Offline page here
     }
 
     if (null != body) {

@@ -30,12 +30,12 @@ class Main {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['total'] = this.total;
+    // data['total'] = this.total;
     if (this.item != null) {
       data['item'] = this.item.map((v) => v.toJson()).toList();
     }
-    data['month'] = this.month;
-    data['year'] = this.year;
+    // data['month'] = this.month;
+    // data['year'] = this.year;
     if (this.category != null) {
       data['category'] = this.category.map((v) => v.toJson()).toList();
     }

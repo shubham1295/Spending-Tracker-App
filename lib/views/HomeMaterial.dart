@@ -50,13 +50,12 @@ class _HomeMaterialState extends State<HomeMaterial> {
         },
         child: Scaffold(
           appBar: AppBar(title: Text("Spending Tracker")),
-          body: SingleChildScrollView(
-              child: FutureBuilder<Main>(
+          body: FutureBuilder<Main>(
             future: futureBean,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               mainBean = snapshot.data;
               if (snapshot.hasData) {
-                return Builder(
+                return SingleChildScrollView(child: Builder(
                   builder: (context) {
                     return Form(
                       key: _formKey,
@@ -66,13 +65,14 @@ class _HomeMaterialState extends State<HomeMaterial> {
                           Container(
                             padding: const EdgeInsetsDirectional.fromSTEB(
                                 15, 20, 0, 10),
-                            child: Text("\u20B9 20,000",
+                            child: Text("\u20B9 " + mainBean.total,
                                 style: TextStyle(fontSize: 30.0)),
                           ),
                           Container(
                             padding: const EdgeInsetsDirectional.fromSTEB(
                                 15, 0, 0, 0),
-                            child: Text("December 2019",
+                            child: Text(
+                                mainBean.month + " " + mainBean.year.toString(),
                                 style: TextStyle(
                                     fontSize: 15.0,
                                     fontWeight: FontWeight.w300)),
@@ -88,33 +88,17 @@ class _HomeMaterialState extends State<HomeMaterial> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: <Widget>[
                                 // Drop Down
-                                DropdownButton<String>(
-                                  hint: Text("Select a Catagory"),
-                                  items: mainBean.category.map((elem) {
-                                    return DropdownMenuItem<String>(
-                                      value: elem.category,
-                                      child: Text(elem.category),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String selectedValue) {
-                                    setState(() {
-                                      this._currentValueSelected =
-                                          selectedValue;
-                                    });
-                                  },
-                                  value: _currentValueSelected,
-                                  isExpanded: true,
-                                ),
+                                buildDropdownWidget(mainBean),
                                 //Item Field
                                 TextFormField(
                                   decoration:
                                       InputDecoration(labelText: 'Item'),
-                                  /* validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Enter Last Name';
-                                }
-                                return null;
-                              }, */
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'Enter Item';
+                                    }
+                                    return null;
+                                  },
                                   // onSaved: (val) => setState(() => _user.lastName = val) ,
                                 ),
                                 //Cost Field
@@ -133,34 +117,9 @@ class _HomeMaterialState extends State<HomeMaterial> {
                               }, */
                                   // onSaved: (val) => setState(() => _user.lastName = val) ,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8),
-                                  child: OutlineButton(
-                                      splashColor: Colors.red,
-                                      onPressed: () => _selectDate(context),
-                                      // decoration: InputDecoration(
-                                      //     labelText: (null != _selectedDate)
-                                      //         ? _selectedDate.toString()
-                                      //         : "Select Date"),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text((null != _selectedDate)
-                                            ? _selectedDate
-                                            : "Select Date"),
-                                      )),
-                                ),
+                                dateWidget(_selectDate, context),
 
-                                MaterialButton(
-                                    child: Text('Send'),
-                                    padding: EdgeInsets.all(15.0),
-                                    color: Theme.of(context).primaryColor,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    onPressed: () {
-                                      //doSomething,
-                                      debugPrint("Send Pressed");
-                                    })
+                                sendButtonWidget(context)
                               ],
                             ),
                           ),
@@ -169,14 +128,65 @@ class _HomeMaterialState extends State<HomeMaterial> {
                       ),
                     );
                   },
-                );
+                ));
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");
               }
-              return CircularProgressIndicator();
+              return Container(
+                height: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                  // Text('Please Wait ... '),
+                ),
+              );
             },
-          )),
+          ),
           drawer: MenuDrawer(),
         ));
+  }
+
+  DropdownButton<String> buildDropdownWidget(Main mainBean) {
+    return DropdownButton<String>(
+      hint: Text("Select a Catagory"),
+      items: mainBean.category.map((elem) {
+        return DropdownMenuItem<String>(
+          value: elem.category,
+          child: Text(elem.category),
+        );
+      }).toList(),
+      onChanged: (String selectedValue) {
+        setState(() {
+          this._currentValueSelected = selectedValue;
+        });
+      },
+      value: _currentValueSelected,
+      isExpanded: true,
+    );
+  }
+
+  Padding dateWidget(
+      Future<dynamic> _selectDate(BuildContext context), BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: OutlineButton(
+          onPressed: () => _selectDate(context),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child:
+                Text((null != _selectedDate) ? _selectedDate : "Select Date"),
+          )),
+    );
+  }
+
+  MaterialButton sendButtonWidget(BuildContext context) {
+    return MaterialButton(
+        child: Text('Send'),
+        padding: EdgeInsets.all(15.0),
+        color: Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        onPressed: () {
+          //doSomething,
+          debugPrint("Send Pressed");
+        });
   }
 }
